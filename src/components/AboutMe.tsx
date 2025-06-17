@@ -59,7 +59,7 @@ const AboutMe = () => {
               />
 
               <img
-                src="public/portfolio-pic.jpg"
+                src="public/portfolio pic.jpg"
                 alt="Profile"
                 className="w-[22rem] h-[22rem] rounded-full object-cover border-8 border-white shadow-xl absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 hover:border-pink-300 transition-all duration-300"
               />
