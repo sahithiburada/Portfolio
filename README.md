@@ -130,12 +130,6 @@ npm run build
 
 ---
 
-## 📜 License
-
-This project is licensed under the MIT License.
-
----
-
 ## 📬 Contact
 
 Reach out via the contact form on the portfolio or email me at `your-email@example.com`.
