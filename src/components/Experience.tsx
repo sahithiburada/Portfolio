@@ -69,42 +69,52 @@ const Experience = () => {
   };
 
   return (
-    <section id="experience" className="relative py-20 px-6 overflow-hidden">
+    <section id="experience" className="relative py-20 px-6 overflow-x-auto">
       <h2 className="text-5xl font-bold text-center text-gray-800 mb-20">
         Experience Timeline
         <div className="w-24 h-1 bg-gradient-to-r from-pink-400 to-purple-500 rounded-full mt-4 mx-auto" />
       </h2>
 
       <div className="relative max-w-6xl mx-auto">
-        {/* Vertical timeline line */}
-        <div className="absolute left-1/2 transform -translate-x-1/2 h-full w-1 bg-gradient-to-b from-pink-300 via-purple-300 to-rose-300 rounded-full z-0" />
+        {/* Horizontal timeline line */}
+        <div className="absolute top-1/2 transform -translate-y-1/2 w-full h-1 bg-gradient-to-r from-pink-300 via-purple-300 to-rose-300 rounded-full z-0" />
 
-        {experiences.map((exp, i) => {
-          const isLeft = i % 2 === 0;
-          const Icon = exp.icon;
-          return (
-            <motion.div
-              key={i}
-              initial={{ opacity: 0, y: 40 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ duration: 0.6, delay: i * 0.2 }}
-              className="relative mb-20 z-10"
-            >
-              {/* Center dot */}
-              <div className="absolute left-1/2 transform -translate-x-1/2 w-6 h-6 bg-gradient-to-br from-yellow-400 to-orange-500 rounded-full border-4 border-white shadow-lg z-20" />
+        <div className="flex gap-12 py-6 overflow-x-auto scrollbar-hide">
+          {/* Custom scrollbar for both desktop and mobile */}
+          <style>
+            {`
+              #experience .overflow-x-auto::-webkit-scrollbar {
+                height: 4px; /* Reduced height for shorter scrollbar */
+                background: transparent;
+              }
+              #experience .overflow-x-auto::-webkit-scrollbar-thumb {
+                background: linear-gradient(to right, #ff70a6, #9b59b6, #ff6f61); /* Matching gradient */
+                border-radius: 2px;
+              }
+              #experience .overflow-x-auto::-webkit-scrollbar-track {
+                background: transparent;
+              }
+            `}
+          </style>
 
-              <div
-                className={`flex justify-${isLeft ? "end" : "start"} w-full`}
+          {experiences.map((exp, i) => {
+            const Icon = exp.icon;
+            return (
+              <motion.div
+                key={i}
+                initial={{ opacity: 0, x: -40 }}
+                whileInView={{ opacity: 1, x: 0 }}
+                viewport={{ once: true }}
+                transition={{ duration: 0.6, delay: i * 0.2 }}
+                className="relative min-w-[300px] z-10"
               >
-                <div
-                  className={`w-1/2 px-6 ${
-                    isLeft ? "text-right pr-10" : "text-left pl-10"
-                  }`}
-                >
+                {/* Center dot */}
+                <div className="absolute -top-3 left-1/2 transform -translate-x-1/2 w-6 h-6 bg-gradient-to-br from-yellow-400 to-orange-500 rounded-full border-4 border-white shadow-lg z-20" />
+
+                <div className="relative">
                   <motion.div
                     whileHover={{ scale: 1.03 }}
-                    className={`p-6 rounded-2xl shadow-xl bg-gradient-to-br ${exp.color} text-white relative transition-all`}
+                    className={`p-6 rounded-2xl shadow-xl bg-gradient-to-br ${exp.color} text-white relative transition-all h-80 overflow-hidden`} // Increased height to h-80 (320px)
                   >
                     {/* Icon beside title */}
                     <div className="flex items-center gap-2 mb-2">
@@ -114,7 +124,7 @@ const Experience = () => {
 
                     <h4 className="text-lg opacity-90 mb-2">{exp.company}</h4>
 
-                    <div className="flex justify-end gap-4 text-sm text-white/80 mb-3">
+                    <div className="flex justify-between gap-4 text-sm text-white/80 mb-3">
                       <span className="flex items-center gap-1">
                         <Calendar size={14} />
                         {exp.period}
@@ -125,10 +135,10 @@ const Experience = () => {
                       </span>
                     </div>
 
-                    <p className="text-sm text-white/90 mb-4">{exp.description}</p>
+                    <p className="text-sm text-white/90 mb-4 line-clamp-4">{exp.description}</p>
 
                     {/* Skills preview */}
-                    <div className="flex justify-end gap-2 flex-wrap mb-4">
+                    <div className="flex justify-between gap-2 flex-wrap mb-6">
                       {exp.skills.slice(0, 2).map((skill, idx) => (
                         <span
                           key={idx}
@@ -147,7 +157,7 @@ const Experience = () => {
                     {/* Expand button */}
                     <button
                       onClick={() => toggle(i)}
-                      className="flex items-center gap-1 text-white/90 hover:text-white text-sm"
+                      className="flex items-center gap-1 text-white/90 hover:text-white text-sm absolute bottom-4 right-4"
                     >
                       {expandedIndex === i ? "Show Less" : "Show More"}
                       {expandedIndex === i ? (
@@ -188,10 +198,10 @@ const Experience = () => {
                     </motion.div>
                   )}
                 </div>
-              </div>
-            </motion.div>
-          );
-        })}
+              </motion.div>
+            );
+          })}
+        </div>
       </div>
     </section>
   );

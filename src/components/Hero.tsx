@@ -7,6 +7,7 @@ const Hero = () => {
   const [cardTilt, setCardTilt] = useState({ id: null, tiltX: 0, tiltY: 0 });
   const [scrollY, setScrollY] = useState(0);
   const [titleAnimation, setTitleAnimation] = useState(false);
+  const [activeFolder, setActiveFolder] = useState<string | null>(null); // For touch support
 
   useEffect(() => {
     const handleScroll = () => setScrollY(window.scrollY);
@@ -79,6 +80,17 @@ const Hero = () => {
 
   const handleCardMouseLeave = () => {
     setCardTilt({ id: null, tiltX: 0, tiltY: 0 });
+    setHoveredFolder(null);
+  };
+
+  const handleTouchStart = (id: string) => {
+    setActiveFolder(id);
+    setHoveredFolder(id);
+  };
+
+  const handleTouchEnd = () => {
+    setActiveFolder(null);
+    setHoveredFolder(null);
   };
 
   return (
@@ -115,17 +127,17 @@ const Hero = () => {
       </div>
 
       {/* Hero Content */}
-      <div className="relative w-full max-w-6xl text-center flex flex-col items-center justify-center h-full py-12 space-y-12">
+      <div className="relative w-full max-w-6xl text-center flex flex-col items-center justify-center h-full py-12 space-y-8">
         {/* CTA Buttons (Positioned at the Very Top) */}
-        <div className="absolute top-0 pt-4 flex justify-center gap-4">
+        <div className="absolute top-0 pt-2 flex flex-col sm:flex-row justify-center gap-3 sm:gap-4">
           <button
-            className="group px-6 py-2 bg-gradient-to-r from-pink-500/80 via-purple-600/80 to-blue-600/80 text-white font-semibold rounded-full backdrop-blur-md border border-white/30 hover:scale-105 transition-all duration-500 shadow-[0_0_10px_rgba(236,72,153,0.3)]"
+            className="group px-4 sm:px-6 py-1.5 sm:py-2 bg-gradient-to-r from-pink-500/80 via-purple-600/80 to-blue-600/80 text-white font-semibold rounded-full backdrop-blur-md border border-white/30 hover:scale-105 transition-all duration-500 shadow-[0_0_10px_rgba(236,72,153,0.3)] text-sm sm:text-base"
             onClick={() => handleFolderClick('projects')}
           >
             View My Work
           </button>
           <button
-            className="group px-6 py-2 bg-white/10 text-purple-600 font-semibold rounded-full backdrop-blur-md border border-purple-400/50 hover:bg-purple-50/20 transition-all duration-500 shadow-[0_0_10px_rgba(139,92,246,0.3)]"
+            className="group px-4 sm:px-6 py-1.5 sm:py-2 bg-white/10 text-purple-600 font-semibold rounded-full backdrop-blur-md border border-purple-400/50 hover:bg-purple-50/20 transition-all duration-500 shadow-[0_0_10px_rgba(139,92,246,0.3)] text-sm sm:text-base"
             onClick={() => handleFolderClick('contact')}
           >
             Get In Touch
@@ -133,64 +145,70 @@ const Hero = () => {
         </div>
 
         {/* Text Section */}
-        <div>
-          <h1 className={`text-4xl md:text-6xl font-bold bg-gradient-to-r from-purple-600 via-pink-600 to-blue-600 bg-clip-text text-transparent transition-all duration-1000 mb-2 ${titleAnimation ? "opacity-100 translate-y-0" : "opacity-0 translate-y-6"}`}>
+        <div className="pt-16 sm:pt-0">
+          <h1 className={`text-3xl sm:text-4xl md:text-6xl font-bold bg-gradient-to-r from-purple-600 via-pink-600 to-blue-600 bg-clip-text text-transparent transition-all duration-1000 mb-2 ${titleAnimation ? "opacity-100 translate-y-0" : "opacity-0 translate-y-6"}`}>
             Sahithi Burada
           </h1>
-          <h2 className={`text-6xl md:text-8xl font-black text-transparent bg-clip-text bg-gradient-to-r from-pink-600 via-purple-600 to-blue-600 drop-shadow-2xl mb-2 transition-all duration-1000 delay-300 ${titleAnimation ? "opacity-100 translate-y-0" : "opacity-0 translate-y-6"}`}>
+          <h2 className={`text-4xl sm:text-6xl md:text-8xl font-black text-transparent bg-clip-text bg-gradient-to-r from-pink-600 via-purple-600 to-blue-600 drop-shadow-2xl mb-2 transition-all duration-1000 delay-300 ${titleAnimation ? "opacity-100 translate-y-0" : "opacity-0 translate-y-6"}`}>
             PORTFOLIO
           </h2>
+          <br></br>
         </div>
 
-        {/* Cards Section (Moved Further Down) */}
+        {/* Cards Section (Horizontal Arc on All Screens) */}
         <div className="relative w-full flex items-end justify-center pb-24">
           {folders.map((folder, index) => {
             const totalCards = folders.length;
-            const cardWidth = 160; // Approximate width of each card (w-40 = 160px)
-            const overlap = 40; // Overlap between cards
+            // Dynamically calculate card width based on viewport
+            const viewportWidth = window.innerWidth;
+            const cardWidth = viewportWidth < 640 ? Math.max(90, viewportWidth / 5 - 10) : 160; // Min 90px, max fit for mobile
+            const overlap = viewportWidth < 640 ? Math.max(10, cardWidth / 4) : 40; // Dynamic overlap
             const totalWidth = (totalCards - 1) * (cardWidth - overlap); // Total width of the row
             const x = (index * (cardWidth - overlap)) - (totalWidth / 2); // Horizontal positioning
 
             // Calculate slight curve for y-position (mimicking a subtle arc)
-            const maxOffsetY = 20; // Maximum vertical offset for the arc
+            const maxOffsetY = viewportWidth < 640 ? 8 : 20; // Reduced arc height on mobile
             const curve = maxOffsetY * Math.sin((index / (totalCards - 1)) * Math.PI); // Subtle sine wave for arc
 
             // Calculate base tilt: cards on the left tilt right, cards on the right tilt left
-            const baseTiltAngle = (index - (totalCards - 1) / 2) * 5; // Tilt ranges from -10 to 10 degrees
+            const baseTiltAngle = (index - (totalCards - 1) / 2) * (viewportWidth < 640 ? 2 : 5); // Reduced tilt on mobile
 
             // Apply dynamic tilt based on mouse position
-            const isHovered = hoveredFolder === folder.id;
+            const isHovered = hoveredFolder === folder.id || activeFolder === folder.id;
             const tiltX = isHovered && cardTilt.id === folder.id ? cardTilt.tiltX : 0;
             const tiltY = isHovered && cardTilt.id === folder.id ? cardTilt.tiltY : 0;
+
+            // Capitalize the icon component to use in JSX
+            const Icon = folder.icon;
 
             return (
               <div
                 key={folder.id}
-                className={`absolute animate-float-card transition-all duration-300 ease-in-out cursor-pointer backdrop-blur-md border border-white/30 rounded-2xl ${
+                className={`absolute animate-float-card transition-all duration-300 ease-in-out cursor-pointer backdrop-blur-md border border-white/30 rounded-2xl w-[${cardWidth}px] sm:w-40 ${
                   isHovered
                     ? 'scale-110 -translate-y-8 z-50 shadow-[0_0_40px_rgba(236,72,153,0.6)]'
                     : 'hover:scale-105 hover:-translate-y-4'
                 }`}
                 style={{
                   left: `calc(50% + ${x}px)`,
-                  bottom: `${-curve - 20}px`, // Move cards further down by 20px
+                  bottom: `${-curve - 20}px`,
                   transform: `translate(-50%, 0) rotate(${baseTiltAngle}deg) rotateX(${tiltX}deg) rotateY(${tiltY}deg)`,
                   zIndex: isHovered ? 50 : totalCards - Math.abs(index - (totalCards - 1) / 2), // Middle cards on top
                   animationDelay: `${index * 0.2}s`, // Staggered animation for each card
                   transition: 'transform 0.5s ease, scale 0.5s ease, translate 0.5s ease, box-shadow 0.5s ease',
+                  width: `${cardWidth}px`, // Apply dynamic width
                 }}
                 onMouseEnter={() => setHoveredFolder(folder.id)}
-                onMouseLeave={() => {
-                  setHoveredFolder(null);
-                  handleCardMouseLeave();
-                }}
+                onMouseLeave={handleCardMouseLeave}
                 onMouseMove={(e) => handleCardMouseMove(e, folder.id)}
+                onTouchStart={() => handleTouchStart(folder.id)}
+                onTouchEnd={handleTouchEnd}
                 onClick={() => handleFolderClick(folder.id)}
               >
-                <div className={`w-40 h-48 ${folder.color} rounded-2xl flex flex-col items-center justify-center text-white text-center px-4`}>
-                  <folder.icon size={30} className="mb-2" />
-                  <h3 className="text-lg font-bold">{folder.name}</h3>
-                  <p className="text-sm opacity-90">{folder.description}</p>
+                <div className={`w-full h-36 sm:h-48 ${folder.color} rounded-2xl flex flex-col items-center justify-center text-white text-center px-2 sm:px-4`}>
+                  <Icon size={viewportWidth < 640 ? 20 : 30} className="mb-1 sm:mb-2" />
+                  <h3 className="text-xs sm:text-lg font-bold">{folder.name}</h3>
+                  <p className="text-[10px] sm:text-sm opacity-90">{folder.description}</p>
                 </div>
               </div>
             );

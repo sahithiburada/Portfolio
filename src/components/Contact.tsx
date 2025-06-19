@@ -63,10 +63,10 @@ const Contact = () => {
     };
 
     emailjs.send(
-      'service_cor5loh',     
-      'template_gxw8yw3',    // Replace this
+      'service_cor5loh',
+      'template_gxw8yw3',
       templateParams,
-      'CugqeOr9UoAEdd9gg'      // Replace this
+      'CugqeOr9UoAEdd9gg'
     ).then(() => {
       setIsSubmitting(false);
       setShowSuccess(true);
@@ -89,65 +89,35 @@ const Contact = () => {
           </div>
         </h2>
 
-        <p className="text-center text-gray-600 text-lg mb-12 max-w-2xl mx-auto">
+        <p className="text-center text-gray-600 text-lg mb-8 max-w-2xl mx-auto">
           Ready to bring your ideas to life? Let's start a conversation!
         </p>
+
+        {/* Icons Row */}
+        <div className="flex flex-wrap justify-center items-center gap-6 mb-12">
+          {contactMethods.map((contact, index) => (
+            <a
+              key={index}
+              href={contact.label === "Email" ? `mailto:${contact.value}` : contact.value}
+              target={contact.label !== "Email" ? "_blank" : undefined}
+              rel="noopener noreferrer"
+              className="flex flex-col items-center text-center transition-transform hover:scale-110"
+            >
+              <div
+                className={`${contact.color} w-14 h-14 rounded-full flex items-center justify-center shadow-lg`}
+              >
+                <contact.icon size={24} className="text-white" />
+              </div>
+              <span className="text-sm text-gray-700 mt-2 font-medium">{contact.label}</span>
+            </a>
+          ))}
+        </div>
 
         <div className="bg-gradient-to-br from-pink-50 via-purple-50 to-rose-50 rounded-3xl p-8 shadow-2xl border-4 border-white/50 relative overflow-hidden">
           <div className="absolute top-0 right-0 w-64 h-64 bg-gradient-to-br from-pink-200/30 to-purple-200/30 rounded-full transform translate-x-32 -translate-y-32"></div>
           <div className="absolute bottom-0 left-0 w-48 h-48 bg-gradient-to-tr from-rose-200/20 to-pink-200/20 rounded-full transform -translate-x-24 translate-y-24"></div>
 
-          <div className="grid lg:grid-cols-2 gap-12 relative z-10">
-            <div className="space-y-6">
-              <h3 className="text-3xl font-bold text-gray-800 mb-8 font-poppins flex items-center">
-                <MessageCircle className="mr-3 text-pink-500" size={32} />
-                Get In Touch
-              </h3>
-
-              <div className="space-y-4">
-                {contactMethods.map((contact, index) => (
-                  <a
-                    key={index}
-                    href={contact.label === "Email" ? `mailto:${contact.value}` : contact.value}
-                    target={contact.label !== "Email" ? "_blank" : undefined}
-                    rel="noopener noreferrer"
-                    className="block"
-                  >
-                    <div
-                      className={`${contact.color} rounded-2xl p-6 shadow-xl cursor-pointer transform transition-all duration-300 hover:scale-105 hover:-rotate-1 relative overflow-hidden group`}
-                      onMouseEnter={() => setHoveredContact(contact.label)}
-                      onMouseLeave={() => setHoveredContact(null)}
-                    >
-                      <div className="absolute -top-3 left-6 w-20 h-6 bg-white/90 rounded-t-lg flex items-center justify-center shadow-lg">
-                        <div className="w-2 h-2 bg-gray-400 rounded-full"></div>
-                      </div>
-
-                      <div className="flex items-center space-x-4">
-                        <div className="p-3 bg-white/20 backdrop-blur-sm rounded-xl group-hover:scale-110 transition-transform">
-                          <contact.icon size={28} className="text-white" />
-                        </div>
-                        <div className="flex-1">
-                          <p className="text-sm font-bold text-white/90 mb-1">{contact.label}</p>
-                          <p className="text-white font-medium mb-2">
-                            {contact.label === "Resume" ? "Click to view" : contact.value}
-                          </p>
-                          <p className="text-white/80 text-sm">{contact.description}</p>
-                        </div>
-                      </div>
-
-                      <div className={`absolute inset-0 bg-white/10 rounded-2xl transition-opacity duration-300 ${hoveredContact === contact.label ? 'opacity-100' : 'opacity-0'}`}></div>
-
-                      {hoveredContact === contact.label && (
-                        <div className="absolute top-2 right-2">
-                          <Star size={16} className="text-yellow-300 animate-pulse" />
-                        </div>
-                      )}
-                    </div>
-                  </a>
-                ))}
-              </div>
-            </div>
-
+          <div className="relative z-10">
             <div className="bg-white/90 backdrop-blur-sm rounded-3xl p-8 shadow-2xl relative border-2 border-white/50">
               <div className="absolute -top-4 left-8 w-24 h-8 bg-gradient-to-r from-amber-400 to-orange-500 rounded-t-xl flex items-center justify-center shadow-lg">
                 <span className="text-sm font-bold text-white">Message</span>

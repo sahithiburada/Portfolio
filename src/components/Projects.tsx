@@ -8,6 +8,7 @@ const Projects = () => {
   const [carouselIndex, setCarouselIndex] = useState<{ [key: string]: number }>({});
   const [aspectRatios, setAspectRatios] = useState<{ [key: string]: number }>({});
   const imageRefs = useRef<{ [key: string]: HTMLImageElement[] }>({});
+  const descriptionRef = useRef<HTMLDivElement>(null); // Reference for description section
 
   const placeholderImage = "https://via.placeholder.com/800x600.png?text=Image+Not+Found";
 
@@ -40,7 +41,7 @@ const Projects = () => {
       color: "bg-gradient-to-br from-blue-400 to-indigo-500",
       features: ["Project Organization Tools", "File sharing", "Integrated Team Communication"],
       Figma: "https://www.figma.com/design/DaSTxoGHOfcWasaWYdl3TC/TeamSync?node-id=0-1&t=VgqfF1DFVGXiXqa6-1",
-      githubUrl: "#"
+      githubUrl: "https://github.com/sahithiburada/TeamSync"
     },
     {
       id: "quarrycrew",
@@ -103,18 +104,25 @@ const Projects = () => {
     }
   };
 
+  // Scroll to description when project is selected
+  useEffect(() => {
+    if (selectedProject && descriptionRef.current) {
+      descriptionRef.current.scrollIntoView({ behavior: "smooth", block: "start" });
+    }
+  }, [selectedProject]);
+
   return (
-    <section id="projects" className="py-20 px-8 bg-white/30 relative overflow-hidden">
+    <section id="projects" className="py-16 md:py-20 px-4 md:px-8 bg-white/30 relative overflow-hidden">
       <div className="max-w-6xl mx-auto">
-        <h2 className="text-5xl font-bold text-center mb-16 text-gray-800 font-poppins">
+        <h2 className="text-4xl md:text-5xl font-bold text-center mb-12 md:mb-16 text-gray-800 font-poppins">
           My Projects
           <div className="text-center mt-4">
-            <div className="inline-block w-24 h-1 bg-gradient-to-r from-pink-400 to-purple-500 rounded-full"></div>
+            <div className="inline-block w-20 md:w-24 h-1 bg-gradient-to-r from-pink-400 to-purple-500 rounded-full"></div>
           </div>
         </h2>
 
         {/* Interactive Project Gallery */}
-        <div className="grid md:grid-cols-3 gap-8 mb-12">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 md:gap-8 mb-12">
           {projects.map((project, index) => (
             <div
               key={project.id}
@@ -128,12 +136,12 @@ const Projects = () => {
                 hoveredProject === project.id ? 'z-20' : 'z-10'
               }`}>
                 {/* Project Card */}
-                <div className={`${project.color} rounded-3xl p-8 shadow-2xl relative overflow-hidden border-4 border-white/20 backdrop-blur-sm h-80`}>
+                <div className={`${project.color} rounded-3xl p-6 md:p-8 shadow-2xl relative overflow-hidden border-4 border-white/20 backdrop-blur-sm h-72 md:h-80`}>
                   {/* Background Pattern */}
                   <div className="absolute inset-0 opacity-10">
-                    <div className="absolute top-4 right-4 w-16 h-16 border-2 border-white rounded-full"></div>
-                    <div className="absolute bottom-8 left-4 w-12 h-12 border-2 border-white rounded-full"></div>
-                    <div className="absolute top-12 left-8 w-8 h-8 border-2 border-white rounded-full"></div>
+                    <div className="absolute top-4 right-4 w-12 md:w-16 h-12 md:h-16 border-2 border-white rounded-full"></div>
+                    <div className="absolute bottom-6 md:bottom-8 left-4 w-10 md:w-12 h-10 md:h-12 border-2 border-white rounded-full"></div>
+                    <div className="absolute top-10 md:top-12 left-6 md:left-8 w-6 md:w-8 h-6 md:h-8 border-2 border-white rounded-full"></div>
                   </div>
 
                   {/* Like Button */}
@@ -142,7 +150,7 @@ const Projects = () => {
                     className="absolute top-4 right-4 z-20 p-2 bg-white/20 backdrop-blur-sm rounded-full hover:bg-white/30 transition-all duration-300 group-hover:scale-110"
                   >
                     <Heart 
-                      size={20} 
+                      size={18} 
                       className={`transition-all duration-300 ${
                         likedProjects.has(project.id) 
                           ? 'text-red-500 fill-red-500 scale-110' 
@@ -152,21 +160,24 @@ const Projects = () => {
                   </button>
 
                   {/* Folder Icon */}
-                  <div className="relative z-10 mb-6">
-                    <Folder size={56} className="text-white/90 group-hover:scale-110 transition-transform duration-300" />
+                  <div className="relative z-10 mb-4 md:mb-6">
+                    <Folder 
+                      size={48} 
+                      className="w-12 h-12 md:w-14 md:h-14 text-white/90 group-hover:scale-110 transition-transform duration-300" 
+                    />
                   </div>
                   
                   {/* Project Info */}
                   <div className="relative z-10">
-                    <h3 className="text-2xl font-bold text-white mb-3 font-poppins group-hover:text-yellow-100 transition-colors">
+                    <h3 className="text-xl md:text-2xl font-bold text-white mb-2 md:mb-3 font-poppins group-hover:text-yellow-100 transition-colors">
                       {project.name}
                     </h3>
-                    <p className="text-white/80 text-sm mb-4 line-clamp-2">
+                    <p className="text-white/80 text-xs md:text-sm mb-3 md:mb-4 line-clamp-2">
                       {project.description.substring(0, 80)}...
                     </p>
                     
                     {/* Tech Stack Preview */}
-                    <div className="flex flex-wrap gap-1 mb-4">
+                    <div className="flex flex-wrap gap-1 mb-3 md:mb-4">
                       {project.technologies.slice(0, 2).map((tech, idx) => (
                         <span key={idx} className="px-2 py-1 bg-white/20 text-white text-xs rounded-full">
                           {tech}
@@ -179,8 +190,8 @@ const Projects = () => {
                       )}
                     </div>
 
-                    <div className="text-white/70 text-sm font-medium">
-                      Click to explore →
+                    <div className="text-white/70 text-xs md:text-sm font-medium">
+                      Tap to explore →
                     </div>
                   </div>
 
@@ -191,7 +202,7 @@ const Projects = () => {
                 </div>
 
                 {/* Floating Tab */}
-                <div className="absolute -top-4 left-8 w-24 h-8 bg-white/90 rounded-t-lg shadow-lg flex items-center justify-center group-hover:bg-white transition-colors">
+                <div className="absolute -top-4 left-6 md:left-8 w-20 md:w-24 h-6 md:h-8 bg-white/90 rounded-t-lg shadow-lg flex items-center justify-center group-hover:bg-white transition-colors">
                   <div className="w-2 h-2 bg-gray-400 rounded-full"></div>
                 </div>
               </div>
@@ -201,7 +212,7 @@ const Projects = () => {
 
         {/* Detailed Project View */}
         {selectedProject && (
-          <div className="bg-white/90 backdrop-blur-sm rounded-3xl p-8 shadow-2xl border border-pink-100 animate-fade-in relative overflow-hidden">
+          <div className="bg-white/90 backdrop-blur-sm rounded-3xl p-6 md:p-8 shadow-2xl border border-pink-100 animate-fade-in relative overflow-hidden">
             {projects
               .filter(project => project.id === selectedProject)
               .map(project => {
@@ -209,12 +220,12 @@ const Projects = () => {
                 const currentAspectRatio = aspectRatios[`${project.id}-${currentImageIndex}`] || 4/3; // Fallback to 4:3
 
                 return (
-                  <div key={project.id} className="grid md:grid-cols-2 gap-12 items-center">
+                  <div key={project.id} className="grid grid-cols-1 md:grid-cols-2 gap-8 md:gap-12 items-center">
                     {/* Project Carousel */}
                     <div className="relative">
                       <div className="absolute inset-0 bg-gradient-to-r from-pink-400 to-purple-500 rounded-2xl blur-lg opacity-25 transition-opacity"></div>
                       <div
-                        className="relative w-full min-h-40 max-h-80 overflow-hidden rounded-2xl shadow-xl"
+                        className="relative w-full min-h-40 max-h-72 md:max-h-80 overflow-hidden rounded-2xl shadow-xl"
                         style={{ aspectRatio: currentAspectRatio }}
                       >
                         {/* Carousel Images */}
@@ -243,19 +254,25 @@ const Projects = () => {
                         {/* Navigation Arrows */}
                         <button
                           onClick={() => handlePrevImage(project.id)}
-                          className="absolute left-4 top-1/2 transform -translate-y-1/2 p-2 bg-white/80 backdrop-blur-sm rounded-full shadow-md hover:bg-white transition-all"
+                          className="absolute left-2 md:left-4 top-1/2 transform -translate-y-1/2 p-3 md:p-2 bg-white/80 backdrop-blur-sm rounded-full shadow-md hover:bg-white transition-all"
                         >
-                          <ChevronLeft size={24} className="text-gray-800" />
+                          <ChevronLeft 
+                            size={20} 
+                            className="w-5 h-5 md:w-6 md:h-6 text-gray-800" 
+                          />
                         </button>
                         <button
                           onClick={() => handleNextImage(project.id)}
-                          className="absolute right-4 top-1/2 transform -translate-y-1/2 p-2 bg-white/80 backdrop-blur-sm rounded-full shadow-md hover:bg-white transition-all"
+                          className="absolute right-2 md:right-4 top-1/2 transform -translate-y-1/2 p-3 md:p-2 bg-white/80 backdrop-blur-sm rounded-full shadow-md hover:bg-white transition-all"
                         >
-                          <ChevronRight size={24} className="text-gray-800" />
+                          <ChevronRight 
+                            size={20} 
+                            className="w-5 h-5 md:w-6 md:h-6 text-gray-800" 
+                          />
                         </button>
 
                         {/* Indicators (Dots) */}
-                        <div className="absolute bottom-4 left-1/2 transform -translate-x-1/2 flex space-x-2">
+                        <div className="absolute bottom-2 md:bottom-4 left-1/2 transform -translate-x-1/2 flex space-x-2">
                           {project.images.map((_, idx) => (
                             <button
                               key={idx}
@@ -271,23 +288,23 @@ const Projects = () => {
                     
                     {/* Project Details */}
                     <div className="space-y-6">
-                      <div>
-                        <h3 className="text-4xl font-bold mb-4 text-gray-800 font-poppins">
+                      <div ref={descriptionRef}> {/* Reference to scroll to */}
+                        <h3 className="text-3xl md:text-4xl font-bold mb-3 md:mb-4 text-gray-800 font-poppins">
                           {project.name}
                         </h3>
-                        <p className="text-gray-600 leading-relaxed text-lg mb-6">
+                        <p className="text-gray-600 leading-relaxed text-base md:text-lg mb-4 md:mb-6">
                           {project.description}
                         </p>
                       </div>
                       
                       {/* Features */}
                       <div>
-                        <h4 className="text-xl font-bold mb-3 text-gray-800">Key Features:</h4>
+                        <h4 className="text-lg md:text-xl font-bold mb-2 md:mb-3 text-gray-800">Key Features:</h4>
                         <div className="space-y-2">
                           {project.features.map((feature, idx) => (
                             <div key={idx} className="flex items-center space-x-3">
                               <div className="w-2 h-2 bg-gradient-to-r from-pink-400 to-purple-500 rounded-full"></div>
-                              <span className="text-gray-600">{feature}</span>
+                              <span className="text-gray-600 text-sm md:text-base">{feature}</span>
                             </div>
                           ))}
                         </div>
@@ -295,12 +312,12 @@ const Projects = () => {
                       
                       {/* Technologies */}
                       <div>
-                        <h4 className="text-xl font-bold mb-3 text-gray-800">Technologies Used:</h4>
-                        <div className="flex flex-wrap gap-3">
+                        <h4 className="text-lg md:text-xl font-bold mb-2 md:mb-3 text-gray-800">Technologies Used:</h4>
+                        <div className="flex flex-wrap gap-2 md:gap-3">
                           {project.technologies.map((tech, idx) => (
                             <span
                               key={idx}
-                              className="px-4 py-2 bg-gradient-to-r from-purple-100 to-pink-100 text-purple-700 rounded-full text-sm font-medium hover:scale-105 transition-transform cursor-default"
+                              className="px-3 md:px-4 py-1 md:py-2 bg-gradient-to-r from-purple-100 to-pink-100 text-purple-700 rounded-full text-xs md:text-sm font-medium hover:scale-105 transition-transform cursor-default"
                             >
                               {tech}
                             </span>
@@ -309,18 +326,24 @@ const Projects = () => {
                       </div>
 
                       {/* Action Buttons */}
-                      <div className="flex space-x-4 pt-4">
-                        <a href={project.Figma} target="_blank" rel="noopener noreferrer" className="flex items-center space-x-2 px-6 py-3 bg-gradient-to-r from-pink-500 to-purple-600 text-white rounded-xl font-medium hover:scale-105 transition-all duration-300 shadow-lg">
-                          <ExternalLink size={20} />
+                      <div className="flex flex-wrap gap-3 md:space-x-4 pt-3 md:pt-4">
+                        <a href={project.Figma} target="_blank" rel="noopener noreferrer" className="flex items-center space-x-2 px-5 md:px-6 py-2 md:py-3 bg-gradient-to-r from-pink-500 to-purple-600 text-white rounded-xl font-medium hover:scale-105 transition-all duration-300 shadow-lg">
+                          <ExternalLink 
+                            size={18} 
+                            className="w-4.5 h-4.5 md:w-5 md:h-5" 
+                          />
                           <span>Figma</span>
                         </a>
-                        <a href={project.githubUrl} target="_blank" rel="noopener noreferrer" className="flex items-center space-x-2 px-6 py-3 bg-gray-800 text-white rounded-xl font-medium hover:scale-105 transition-all duration-300 shadow-lg">
-                          <Github size={20} />
+                        <a href={project.githubUrl} target="_blank" rel="noopener noreferrer" className="flex items-center space-x-2 px-5 md:px-6 py-2 md:py-3 bg-gray-800 text-white rounded-xl font-medium hover:scale-105 transition-all duration-300 shadow-lg">
+                          <Github 
+                            size={18} 
+                            className="w-4.5 h-4.5 md:w-5 md:h-5" 
+                          />
                           <span>View Code</span>
                         </a>
                         <button
                           onClick={() => setSelectedProject(null)}
-                          className="px-6 py-3 bg-gray-100 text-gray-700 rounded-xl font-medium hover:bg-gray-200 transition-colors"
+                          className="px-5 md:px-6 py-2 md:py-3 bg-gray-100 text-gray-700 rounded-xl font-medium hover:bg-gray-200 transition-colors"
                         >
                           Close
                         </button>
@@ -334,8 +357,8 @@ const Projects = () => {
       </div>
 
       {/* Background Elements */}
-      <div className="absolute top-20 right-10 w-32 h-32 bg-gradient-to-br from-pink-200 to-purple-200 rounded-full opacity-20 blur-2xl animate-pulse"></div>
-      <div className="absolute bottom-20 left-10 w-40 h-40 bg-gradient-to-br from-purple-200 to-rose-200 rounded-full opacity-15 blur-3xl animate-pulse" style={{ animationDelay: '2s' }}></div>
+      <div className="absolute top-16 md:top-20 right-8 md:right-10 w-24 md:w-32 h-24 md:h-32 bg-gradient-to-br from-pink-200 to-purple-200 rounded-full opacity-20 blur-2xl animate-pulse"></div>
+      <div className="absolute bottom-16 md:bottom-20 left-8 md:left-10 w-32 md:w-40 h-32 md:h-40 bg-gradient-to-br from-purple-200 to-rose-200 rounded-full opacity-15 blur-3xl animate-pulse" style={{ animationDelay: '2s' }}></div>
     </section>
   );
 };
