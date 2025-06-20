@@ -5,7 +5,7 @@ A visually stunning, interactive portfolio to showcase my Fullstack Development 
 
 ## 🌐 Live Site
 
-🔗 **URL**: [https://lovable.dev/projects/c7ddf9bd-960b-4d0f-a655-069b8b83656a](https://lovable.dev/projects/c7ddf9bd-960b-4d0f-a655-069b8b83656a)
+🔗 **URL**: [Check My Portfolio Here](https://portfolio-sahithi-buradas-projects.vercel.app/)
 
 ---
 
